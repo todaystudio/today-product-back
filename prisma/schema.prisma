@@ -1,0 +1,135 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                  Int                   @id @default(autoincrement())
+  createdAt           DateTime              @default(now()) @map("created_at")
+  updatedAt           DateTime              @updatedAt @map("updated_at")
+  email               String                @unique
+  password            String
+  name                String
+  avatarPath          String                @default("/uploads/avatars/default.png") @map("avatar_path")
+  phone               String?               @unique
+  telegramId          String?               @unique @map("telegram_id")
+  phoneConfirm        Boolean               @default(false) @map("phone_confirm")
+  emailConfirm        Boolean               @default(false) @map("email_confirm")
+  emailing            Boolean               @default(false)
+  isAdmin             Boolean               @default(false) @map("is_admin")
+  product             Product[]
+  productSubs         ProductSubs[]
+  Subscribers         Subscribers?
+  OrderForUpdatePrice OrderForUpdatePrice[]
+}
+
+model Product {
+  id                  Int                   @id @default(autoincrement())
+  createdAt           DateTime              @default(now()) @map("created_at")
+  updatedAt           DateTime              @updatedAt @map("updated_at")
+  title               String
+  slug                String                @unique
+  description         String
+  weight              Float?
+  imagePath           String                @default("uploads/avatars/default.png") @map("image_path")
+  lastPriceDate       DateTime              @default(now()) @map("last_price_date")
+  percentToLastPrice  Float?                @default(0) @map("percent_to_last_price")
+  toLastPrice         Float?                @default(0) @map("to_last_price")
+  userId              Int                   @map("user_id")
+  productCategoryId   Int
+  lastPrice           Int?                  @map("last_price")
+  price               Price[]
+  category            ProductCategory       @relation(fields: [productCategoryId], references: [id])
+  author              User                  @relation(fields: [userId], references: [id])
+  ProductSubs         ProductSubs[]
+  Barcode             Barcode[]
+  parseUrl            String[]              @map("parse_url")
+  OrderForUpdatePrice OrderForUpdatePrice[]
+}
+
+model ProductSubs {
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  productId Int     @map("product_id")
+  product   Product @relation(fields: [productId], references: [id])
+  user      User    @relation(fields: [userId], references: [id])
+
+  @@unique([userId, productId])
+}
+
+model Barcode {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  code      String   @unique
+  product   Product? @relation(fields: [productId], references: [id])
+  productId Int?
+}
+
+model Price {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  productId Int?     @map("product_id")
+  price     Int
+  shopId    Int?     @map("shop_id")
+  product   Product? @relation(fields: [productId], references: [id])
+  shop      Shop?    @relation(fields: [shopId], references: [id], onDelete: Restrict)
+}
+
+model Shop {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  title     String
+  slug      String   @unique
+  logoPath  String   @default("uploads/avatars/default.png") @map("logo_path")
+  website   String
+  price     Price[]
+}
+
+model ProductCategory {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  title       String
+  description String?
+  slug        String    @unique
+  icon        String?   @default("uploads/avatars/default.png")
+  Product     Product[]
+}
+
+model Subscribers {
+  telegramId Int     @unique @map("telegram_id")
+  user       User    @relation(fields: [userId], references: [id])
+  userId     Int     @unique
+  mailing    Boolean @default(true)
+
+  @@unique([userId, telegramId])
+}
+
+model OrderForUpdatePrice {
+  id        Int                     @id @default(autoincrement())
+  createdAt DateTime                @default(now()) @map("created_at")
+  updatedAt DateTime                @updatedAt @map("updated_at")
+  User      User                    @relation(fields: [userId], references: [id])
+  userId    Int
+  Product   Product                 @relation(fields: [productId], references: [id])
+  productId Int
+  price     Int
+  link      String?
+  message   String?
+  status    EnumOrderForUpdatePrice @default(CREATED)
+}
+
+enum EnumOrderForUpdatePrice {
+  CREATED
+  PENDING
+  SUCCESS
+  REJECTED
+}

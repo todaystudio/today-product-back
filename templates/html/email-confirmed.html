@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Почта подтверждена!</title>
+</head>
+
+<body>
+
+  <style>
+    body {
+      text-align: center;
+      font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+      padding-top: 100px;
+    }
+  </style>
+
+  <h1>Почта подтверждена</h1>
+  <p>Через <span id='timer'>10</span> секунд вы будете автоматически перенаправлены на сайт</p>
+  <p>или перейдите по <a href="https://google.com/">ссылке</a></p>
+
+  <script>
+    const timerSpan = document.querySelector('#timer')
+    let timer = 10
+    if (timer === 10) timer--
+    setInterval(() => {
+      if (timer === 0) return window.location.replace('https://google.com/')
+      timerSpan.innerHTML = timer
+      timer--
+    }, 1000)
+  </script>
+
+</body>
+
+</html>

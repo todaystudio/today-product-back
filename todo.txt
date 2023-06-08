@@ -1,0 +1,9 @@
+[X] - Create methods for Product: search, filter, sort
+[X] - When Price be added, field: percentForLastPrice and toLastPrice must be update
+[X] - Create PaginationService
+[X] - Create method for Product, it be returned similar product to frontend 
+[X] - Create additional check for exists category when creating product
+[ ] - Check everywhere @UseValidationPipe()
+[0] - If barcode already exists - return error
+[0] - When we create new Product, we must check information has it data about price. If is has, then we need call PriceService and add new Price for this product.
+[X] - CronService. Every day we need parse new price for each product has url for parsing.

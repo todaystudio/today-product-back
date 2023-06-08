@@ -1,0 +1,1 @@
+colors = ["lavender", "thistle", "plum", "violet", "orchid", "fuchsia", "magenta", "mediumOrchid", "mediumPurple", "rebeccaPurple", "blueViolet", "darkViolet", "darkOrchid", "darkMagenta", "purple", "indigo", "slateBlue", "darkSlateBlue", "mediumSlateBlue"]
